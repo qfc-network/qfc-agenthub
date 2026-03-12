@@ -11,6 +11,8 @@ export type Actor = {
   status: ActorStatus;
   capabilities: string[];
   metadata: Record<string, unknown>;
+  max_delegation_depth: number;
+  availability: string;
   created_at: string;
   updated_at: string;
 };

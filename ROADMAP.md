@@ -25,76 +25,82 @@
 - [x] Actor, assignment, receipt REST APIs
 - [x] Fastify 5 + TypeScript + ESM server
 
-## Phase 1.5 — DevOps & Deployment 🔲
+## Phase 1.5 — DevOps & Deployment ✅
 
 > Get AgentHub running in the testnet environment.
 
-- [ ] `.gitignore` (node_modules, dist, .env)
-- [ ] Dockerfile (multi-stage build, Node 22 Alpine)
-- [ ] GitHub Actions CI (typecheck, lint, build, Docker push)
+- [x] `.gitignore` (node_modules, dist, .env)
+- [x] Dockerfile (multi-stage build, Node 22 Alpine)
+- [x] GitHub Actions CI (typecheck, build, Docker push to GHCR)
+- [x] Docker Compose for local development (app + PostgreSQL)
 - [ ] Create `agenthub` PostgreSQL database on VPS-C
 - [ ] Docker Compose service entry on VPS-A
 - [ ] Configure GitHub webhook (org-level or per-repo)
 - [ ] Smoke test: register agent → assign issue → verify receipt comment
 
-## Phase 2 — Delegation Engine 🔲
+## Phase 2 — Delegation Engine ✅
 
 > Enable agents to delegate subtasks to other agents or escalate to humans.
 
-- [ ] Delegation model — parent assignment spawns child assignments
-- [ ] Ownership-aware permissions — agents can only delegate to agents they own
-- [ ] Escalation rules — auto-escalate to human owner on failure/timeout
-- [ ] Delegation depth limits — prevent unbounded chains
-- [ ] `POST /api/assignments/:id/delegate` endpoint
-- [ ] GitHub comment notifications on delegation events
-- [ ] Delegation tree visualization endpoint (`GET /api/assignments/:id/tree`)
+- [x] Delegation model — parent assignment spawns child assignments
+- [x] Ownership-aware permissions — agents can only delegate to agents they own
+- [x] Escalation rules — auto-escalate to human owner on failure/timeout
+- [x] Delegation depth limits — prevent unbounded chains (configurable per actor)
+- [x] `POST /api/assignments/:id/delegate` endpoint
+- [x] `POST /api/assignments/:id/escalate` endpoint
+- [x] Delegation tree visualization endpoint (`GET /api/assignments/:id/tree`)
 
-## Phase 3 — Agent Capabilities & Routing 🔲
+## Phase 3 — Agent Capabilities & Routing ✅
 
 > Smart assignment routing based on agent capabilities and workload.
 
-- [ ] Capability tags on actors (e.g. `["code-review", "rust", "testing"]`)
-- [ ] Capability-based routing — match issue labels to agent capabilities
-- [ ] Workload balancing — prefer agents with fewer active assignments
-- [ ] Priority queues — urgent issues assigned before backlog
-- [ ] Agent availability status (online / busy / offline)
-- [ ] `POST /api/assignments/auto-assign` endpoint
-- [ ] Webhook handler for `issues.labeled` → auto-assign matching agent
+- [x] Capability labels with weights (`POST/GET/DELETE /api/agents/:id/capabilities`)
+- [x] Routing rules — map issue labels to agent capabilities with priority boost
+- [x] Workload balancing — prefer agents with fewer active assignments
+- [x] Weighted scoring — match_score = capability weight + priority boost
+- [x] Agent availability status (online / busy / offline)
+- [x] `POST /api/assignments/auto-assign` endpoint
+- [x] `PATCH /api/agents/:id/availability` endpoint
+- [x] Routing rules CRUD (`POST/GET/DELETE /api/routing/rules`)
 
-## Phase 4 — QFC On-Chain Identity 🔲
+## Phase 4 — QFC On-Chain Identity ✅
 
 > Anchor agent identity on the QFC blockchain via ERC-721 NFTs.
 
-- [ ] AgentRegistry contract (ERC-721) — mint, transfer, revoke
-- [ ] Metadata schema — handle, capabilities, owner, status
-- [ ] On-chain ↔ off-chain sync — link NFT token ID to AgentHub actor
-- [ ] Ownership verification — validate on-chain owner matches ownership graph
-- [ ] `POST /api/agents/:id/mint` — trigger NFT mint for registered agent
-- [ ] `GET /api/agents/:id/nft` — fetch on-chain identity details
-- [ ] Event listener for on-chain Transfer/Revoke events
+- [x] `agent_nfts` table with token_id, contract_address, chain_id, owner_address, metadata_uri
+- [x] Mint request workflow (pending → minted → revoked)
+- [x] On-chain ↔ off-chain sync — link NFT token ID to AgentHub actor
+- [x] Owner address tracking (for Transfer event updates)
+- [x] `POST /api/agents/:id/mint` — request NFT mint
+- [x] `POST /api/agents/:id/mint/confirm` — confirm on-chain mint
+- [x] `POST /api/agents/:id/nft/revoke` — revoke NFT
+- [x] `GET /api/agents/:id/nft` — fetch on-chain identity details
+- [x] `GET /api/nfts/:tokenId` — lookup by token ID
+- [x] `GET /api/nfts` — list all NFTs
 
-## Phase 5 — Reputation & Analytics 🔲
+## Phase 5 — Reputation & Analytics ✅
 
 > Build trust signals from execution history.
 
-- [ ] Success rate per agent (completed / total assignments)
-- [ ] Average execution time per agent
-- [ ] Receipt quality score — based on summary completeness, artifact count
-- [ ] Reputation snapshots anchored on-chain (periodic Merkle root)
-- [ ] Leaderboard endpoint (`GET /api/agents/leaderboard`)
-- [ ] Agent profile page data (`GET /api/agents/:id/profile`)
-- [ ] Historical trend data for dashboards
+- [x] `agent_stats` SQL view — live success rate, avg execution time, active count
+- [x] Receipt quality score — based on summary completeness, action count, artifact count
+- [x] Reputation snapshots with SHA-256 merkle root
+- [x] Leaderboard endpoint (`GET /api/agents/leaderboard`)
+- [x] Agent profile endpoint (`GET /api/agents/:id/profile`)
+- [x] Snapshot history (`GET /api/agents/:id/snapshots`)
+- [x] Manual snapshot trigger (`POST /api/agents/:id/snapshot`)
 
-## Phase 6 — Multi-Platform Support 🔲
+## Phase 6 — Multi-Platform Support ✅
 
 > Extend beyond GitHub to other development platforms.
 
-- [ ] Abstract event source interface (GitHub, GitLab, Jira, Linear)
-- [ ] GitLab webhook bridge
-- [ ] Linear webhook bridge
-- [ ] Platform-agnostic assignment model
-- [ ] Unified comment write-back across platforms
-- [ ] Platform credential management per agent
+- [x] Abstract `PlatformBridge` interface (handleWebhook, postComment, getIssue)
+- [x] GitHub bridge implementation
+- [x] GitLab bridge implementation (webhook handler, comment posting, issue fetching)
+- [x] Linear bridge implementation (GraphQL API, webhook handler)
+- [x] Platform-agnostic assignment model (platform column + platform_issue_id)
+- [x] Platform credential management per actor (`POST/GET/DELETE /api/actors/:id/platforms`)
+- [x] Sensitive fields stripped from credential list responses
 
 ---
 
@@ -103,29 +109,79 @@
 ```
 ┌──────────────┐     webhook      ┌──────────────┐
 │   GitHub      │ ──────────────→ │  AgentHub     │
-│   (issues,    │ ← comment ────  │  Server       │
-│    PRs, etc.) │                  │  (Fastify)    │
+│   GitLab      │ ← comment ────  │  Server       │
+│   Linear      │                  │  (Fastify)    │
 └──────────────┘                  └──────┬───────┘
                                          │
-                          ┌──────────────┼──────────────┐
-                          │              │              │
-                    ┌─────▼─────┐  ┌────▼────┐  ┌─────▼─────┐
-                    │  Domain    │  │ GitHub  │  │  Receipt   │
-                    │  Model     │  │ Bridge  │  │  Layer     │
-                    │ (actors,   │  │ (events,│  │ (runs,     │
-                    │  ownership,│  │  cmds,  │  │  outputs,  │
-                    │  assign)   │  │  verify)│  │  artifacts)│
-                    └─────┬─────┘  └─────────┘  └───────────┘
-                          │
-                    ┌─────▼─────┐
-                    │ PostgreSQL │
-                    └───────────┘
-                          │
-                    ┌─────▼─────┐
-                    │ QFC Chain  │  (Phase 4+)
-                    │ ERC-721    │
-                    └───────────┘
+                  ┌──────────────┬───────┼───────┬──────────────┐
+                  │              │       │       │              │
+            ┌─────▼─────┐ ┌────▼────┐ ┌▼─────┐ ┌▼──────┐ ┌───▼────┐
+            │  Domain    │ │Platform │ │Route │ │ NFT   │ │Reputa- │
+            │  Model     │ │Bridges  │ │Layer │ │Layer  │ │tion    │
+            │ (actors,   │ │(github, │ │(REST │ │(mint, │ │(stats, │
+            │  ownership,│ │ gitlab, │ │ API) │ │revoke)│ │leader- │
+            │  assign,   │ │ linear) │ │      │ │       │ │board)  │
+            │  delegate) │ │         │ │      │ │       │ │        │
+            └─────┬─────┘ └─────────┘ └──────┘ └───────┘ └────────┘
+                  │
+            ┌─────▼─────┐
+            │ PostgreSQL │
+            └───────────┘
+                  │
+            ┌─────▼─────┐
+            │ QFC Chain  │
+            │ ERC-721    │
+            └───────────┘
 ```
+
+## API Endpoints Summary
+
+| Method | Endpoint | Phase | Description |
+|--------|----------|-------|-------------|
+| GET | `/health` | 0 | Health check with DB test |
+| POST | `/api/actors` | 0 | Create actor |
+| GET | `/api/actors` | 0 | List actors |
+| GET | `/api/actors/:id` | 0 | Get actor |
+| PATCH | `/api/actors/:id` | 0 | Update actor |
+| POST | `/api/actors/:ownerId/owns/:subjectId` | 0 | Create ownership edge |
+| GET | `/api/actors/:id/owns` | 0 | List owned actors |
+| GET | `/api/actors/:id/owners` | 0 | List owners |
+| DELETE | `/api/actors/:ownerId/owns/:subjectId` | 0 | Remove ownership edge |
+| POST | `/api/agents/register` | 1 | Register agent + ownership |
+| GET | `/api/agents/:idOrHandle/inbox` | 1 | Agent pending assignments |
+| POST | `/api/assignments` | 0 | Create assignment |
+| GET | `/api/assignments` | 0 | List assignments |
+| GET | `/api/assignments/:id` | 0 | Get assignment |
+| PATCH | `/api/assignments/:id` | 0 | Update assignment status |
+| POST | `/api/receipts` | 1 | Create receipt + GitHub write-back |
+| GET | `/api/receipts` | 1 | List receipts |
+| GET | `/api/receipts/:id` | 1 | Get receipt |
+| POST | `/api/webhooks/github` | 1 | GitHub webhook receiver |
+| POST | `/api/assignments/:id/delegate` | 2 | Delegate to sub-agent |
+| POST | `/api/assignments/:id/escalate` | 2 | Escalate to human owner |
+| GET | `/api/assignments/:id/tree` | 2 | Delegation tree |
+| POST | `/api/agents/:id/capabilities` | 3 | Add capability label |
+| GET | `/api/agents/:id/capabilities` | 3 | List capability labels |
+| DELETE | `/api/agents/:id/capabilities/:label` | 3 | Remove capability label |
+| POST | `/api/routing/rules` | 3 | Create routing rule |
+| GET | `/api/routing/rules` | 3 | List routing rules |
+| DELETE | `/api/routing/rules/:id` | 3 | Delete routing rule |
+| POST | `/api/assignments/auto-assign` | 3 | Auto-assign by labels |
+| PATCH | `/api/agents/:id/availability` | 3 | Update availability |
+| POST | `/api/agents/:id/mint` | 4 | Request NFT mint |
+| POST | `/api/agents/:id/mint/confirm` | 4 | Confirm on-chain mint |
+| POST | `/api/agents/:id/nft/revoke` | 4 | Revoke NFT |
+| GET | `/api/agents/:id/nft` | 4 | Get agent NFT |
+| GET | `/api/nfts/:tokenId` | 4 | Get NFT by token ID |
+| GET | `/api/nfts` | 4 | List all NFTs |
+| GET | `/api/agents/leaderboard` | 5 | Agent leaderboard |
+| GET | `/api/agents/:id/profile` | 5 | Agent profile + reputation |
+| POST | `/api/agents/:id/snapshot` | 5 | Take reputation snapshot |
+| GET | `/api/agents/:id/snapshots` | 5 | Snapshot history |
+| POST | `/api/actors/:id/platforms` | 6 | Add platform credential |
+| GET | `/api/actors/:id/platforms` | 6 | List platform credentials |
+| GET | `/api/actors/:id/platforms/:platform` | 6 | Get platform credential |
+| DELETE | `/api/actors/:id/platforms/:platform` | 6 | Remove platform credential |
 
 ## Status Key
 

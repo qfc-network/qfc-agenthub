@@ -9,6 +9,11 @@ import agentRoutes from './routes/agents.js';
 import assignmentRoutes from './routes/assignments.js';
 import receiptRoutes from './routes/receipts.js';
 import webhookRoutes from './routes/webhooks.js';
+import delegationRoutes from './routes/delegations.js';
+import routingRoutes from './routes/routing.js';
+import nftRoutes from './routes/nfts.js';
+import reputationRoutes from './routes/reputation.js';
+import platformRoutes from './routes/platforms.js';
 
 async function main() {
   const app = Fastify({ logger: true });
@@ -26,6 +31,11 @@ async function main() {
   await app.register(assignmentRoutes, { prefix: '/api' });
   await app.register(receiptRoutes, { prefix: '/api' });
   await app.register(webhookRoutes, { prefix: '/api' });
+  await app.register(delegationRoutes, { prefix: '/api' });
+  await app.register(routingRoutes, { prefix: '/api' });
+  await app.register(nftRoutes, { prefix: '/api' });
+  await app.register(reputationRoutes, { prefix: '/api' });
+  await app.register(platformRoutes, { prefix: '/api' });
 
   // Start server
   const address = await app.listen({ port: config.port, host: config.host });

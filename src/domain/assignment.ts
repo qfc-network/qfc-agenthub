@@ -14,6 +14,14 @@ export type Assignment = {
   status: AssignmentStatus;
   priority: number;
   metadata: Record<string, unknown>;
+  parent_id: string | null;
+  delegation_depth: number;
+  delegated_by: string | null;
+  escalated_to: string | null;
+  escalation_reason: string | null;
+  platform: string;
+  platform_issue_id: string | null;
+  platform_issue_url: string | null;
   created_at: string;
   updated_at: string;
 };
