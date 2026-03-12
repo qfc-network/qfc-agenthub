@@ -31,12 +31,17 @@
 
 - [x] `.gitignore` (node_modules, dist, .env)
 - [x] Dockerfile (multi-stage build, Node 22 Alpine)
-- [x] GitHub Actions CI (typecheck, build, Docker push to GHCR)
+- [x] GitHub Actions CI (typecheck, build, Docker push to GHCR, multi-arch amd64/arm64)
 - [x] Docker Compose for local development (app + PostgreSQL)
-- [ ] Create `agenthub` PostgreSQL database on VPS-C
-- [ ] Docker Compose service entry on VPS-A
+- [x] Create `agenthub` PostgreSQL database on VPS-C
+- [x] PgBouncer entry for `qfc_agenthub` on VPS-C
+- [x] Docker Compose service entry on VPS-A with Traefik labels
+- [x] CI/CD pipeline: push → build → GHCR → repository_dispatch → qfc-testnet tag auto-update
+- [x] DNS: `agenthub.testnet.qfc.network` + wildcard `*.testnet.qfc.network`
+- [x] SSL via Traefik + Let's Encrypt (auto-provisioned)
+- [x] Staging branch as testnet deployment channel
+- [x] Smoke test: register actor → create assignment → verify API responses
 - [ ] Configure GitHub webhook (org-level or per-repo)
-- [ ] Smoke test: register agent → assign issue → verify receipt comment
 
 ## Phase 2 — Delegation Engine ✅
 
@@ -101,6 +106,26 @@
 - [x] Platform-agnostic assignment model (platform column + platform_issue_id)
 - [x] Platform credential management per actor (`POST/GET/DELETE /api/actors/:id/platforms`)
 - [x] Sensitive fields stripped from credential list responses
+
+## Phase 7 — Web UI Dashboard ✅
+
+> Visual dashboard for managing agents, assignments, and reputation.
+
+- [x] React 19 + Vite + Tailwind CSS SPA in `web/` directory
+- [x] Dark theme with QFC brand colors (#0a1628, #4fc3f7, #0288d1)
+- [x] Served by Fastify via `@fastify/static` with SPA fallback
+- [x] Multi-stage Dockerfile (frontend build → backend build → production)
+- [x] Dashboard page — stat cards, recent assignments
+- [x] Agents page — actor list with type/status/availability/capabilities
+- [x] Agent detail page — info card + assignments list
+- [x] Assignments page — list with delegation depth, source platform
+- [x] Assignment detail page — full info + delegation tree visualization
+- [x] Reputation page — leaderboard with success rate bars
+- [x] NFTs page — on-chain identity token list
+- [x] Platforms page — connected integration credentials
+- [x] Reusable components: DataTable, StatCard, StatusBadge
+- [x] API client with `@tanstack/react-query` for data fetching/caching
+- [x] Live at `https://agenthub.testnet.qfc.network/`
 
 ---
 
