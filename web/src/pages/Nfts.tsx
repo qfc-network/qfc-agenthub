@@ -36,25 +36,16 @@ export default function Nfts() {
     { header: 'Status', accessor: (r) => <StatusBadge status={r.status} /> },
     {
       header: 'Owner',
-      accessor: (r) => (
-        <span className="font-mono text-xs">{truncateAddr(r.owner_address)}</span>
-      ),
+      accessor: (r) => <span className="font-mono text-xs">{truncateAddr(r.owner_address)}</span>,
     },
     {
       header: 'Contract',
-      accessor: (r) => (
-        <span className="font-mono text-xs">{truncateAddr(r.contract_address)}</span>
-      ),
+      accessor: (r) => <span className="font-mono text-xs">{truncateAddr(r.contract_address)}</span>,
     },
     { header: 'Chain', accessor: 'chain_id' },
     {
       header: 'TX',
-      accessor: (r) =>
-        r.tx_hash ? (
-          <span className="font-mono text-xs">{truncateAddr(r.tx_hash)}</span>
-        ) : (
-          '—'
-        ),
+      accessor: (r) => (r.tx_hash ? <span className="font-mono text-xs">{truncateAddr(r.tx_hash)}</span> : '—'),
     },
     {
       header: 'Minted',
@@ -64,11 +55,14 @@ export default function Nfts() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">Agent NFTs</h2>
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Agent NFTs</h2>
+          <p className="text-sm text-qfc-muted">On-chain identity records and minting status.</p>
+        </div>
         <span className="text-sm text-qfc-muted">{data?.total ?? 0} total</span>
       </div>
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
         <DataTable
           columns={columns}
           data={data?.items ?? []}

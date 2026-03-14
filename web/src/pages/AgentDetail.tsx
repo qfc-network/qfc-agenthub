@@ -47,8 +47,8 @@ export default function AgentDetail() {
     { header: 'Created', accessor: (r) => new Date(r.created_at).toLocaleDateString() },
   ];
 
-  if (actor.isLoading) return <div className="text-qfc-muted py-12 text-center">Loading...</div>;
-  if (actor.error) return <div className="text-red-400 py-12 text-center">Failed to load actor</div>;
+  if (actor.isLoading) return <div className="py-12 text-center text-qfc-muted">Loading...</div>;
+  if (actor.error) return <div className="py-12 text-center text-red-400">Failed to load actor</div>;
 
   const a = actor.data!;
 
@@ -56,22 +56,22 @@ export default function AgentDetail() {
     <div>
       <button
         onClick={() => navigate('/agents')}
-        className="text-sm text-qfc-muted hover:text-qfc-primary mb-4 inline-block"
+        className="mb-4 inline-block text-sm text-qfc-muted hover:text-qfc-primary"
       >
         &larr; Back to Agents
       </button>
 
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg p-6 mb-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-xl font-bold">{a.display_name}</h2>
-            <p className="text-qfc-muted text-sm">@{a.handle}</p>
+      <div className="mb-6 rounded-lg border border-qfc-border bg-qfc-bg-card p-4 sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <h2 className="break-words text-xl font-bold sm:text-2xl">{a.display_name}</h2>
+            <p className="mt-1 break-all text-sm text-qfc-muted">@{a.handle}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <StatusBadge status={a.status} />
             <StatusBadge status={a.availability} />
             <span
-              className={`text-xs px-2 py-0.5 rounded ${
+              className={`inline-flex rounded px-2 py-0.5 text-xs ${
                 a.type === 'agent'
                   ? 'bg-qfc-accent/20 text-qfc-primary'
                   : 'bg-purple-900/30 text-purple-300'
@@ -82,23 +82,26 @@ export default function AgentDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div>
-            <p className="text-xs text-qfc-muted uppercase">Max Delegation Depth</p>
+            <p className="text-xs uppercase text-qfc-muted">Max Delegation Depth</p>
             <p className="text-lg font-semibold">{a.max_delegation_depth}</p>
           </div>
           <div>
-            <p className="text-xs text-qfc-muted uppercase">Created</p>
+            <p className="text-xs uppercase text-qfc-muted">Created</p>
             <p className="text-lg font-semibold">{new Date(a.created_at).toLocaleDateString()}</p>
           </div>
-          <div className="col-span-2">
-            <p className="text-xs text-qfc-muted uppercase mb-1">Capabilities</p>
-            <div className="flex flex-wrap gap-1">
+          <div className="sm:col-span-2">
+            <p className="mb-1 text-xs uppercase text-qfc-muted">Capabilities</p>
+            <div className="flex flex-wrap gap-1.5">
               {a.capabilities.length === 0 ? (
-                <span className="text-qfc-muted text-sm">None</span>
+                <span className="text-sm text-qfc-muted">None</span>
               ) : (
                 a.capabilities.map((c) => (
-                  <span key={c} className="text-xs px-2 py-0.5 rounded bg-qfc-bg-light text-qfc-muted border border-qfc-border">
+                  <span
+                    key={c}
+                    className="rounded border border-qfc-border bg-qfc-bg-light px-2 py-0.5 text-xs text-qfc-muted"
+                  >
                     {c}
                   </span>
                 ))
@@ -108,9 +111,9 @@ export default function AgentDetail() {
         </div>
       </div>
 
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
-        <div className="px-4 py-3 border-b border-qfc-border">
-          <h3 className="text-sm font-semibold text-qfc-muted uppercase tracking-wider">
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
+        <div className="border-b border-qfc-border px-4 py-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-qfc-muted">
             Assignments ({assignments.data?.total ?? 0})
           </h3>
         </div>

@@ -24,9 +24,7 @@ export default function Reputation() {
   const columns: Column<LeaderboardEntry>[] = [
     {
       header: '#',
-      accessor: (_r, i) => (
-        <span className="text-qfc-muted font-mono">{i + 1}</span>
-      ),
+      accessor: (_r, i) => <span className="font-mono text-qfc-muted">{i + 1}</span>,
       className: 'w-12',
     },
     { header: 'Handle', accessor: 'handle' },
@@ -37,8 +35,8 @@ export default function Reputation() {
     {
       header: 'Success Rate',
       accessor: (r) => (
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-1.5 rounded-full bg-qfc-bg-light overflow-hidden">
+        <div className="flex items-center justify-end gap-2 md:justify-start">
+          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-qfc-bg-light">
             <div
               className="h-full rounded-full bg-qfc-primary"
               style={{ width: `${Math.round(r.success_rate * 100)}%` }}
@@ -50,15 +48,19 @@ export default function Reputation() {
     },
     {
       header: 'Avg Time',
-      accessor: (r) =>
-        r.avg_execution_ms > 0 ? `${(r.avg_execution_ms / 1000).toFixed(1)}s` : '—',
+      accessor: (r) => (r.avg_execution_ms > 0 ? `${(r.avg_execution_ms / 1000).toFixed(1)}s` : '—'),
     },
   ];
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6">Reputation Leaderboard</h2>
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Reputation Leaderboard</h2>
+          <p className="text-sm text-qfc-muted">Trust signals derived from execution history.</p>
+        </div>
+      </div>
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
         <DataTable
           columns={columns}
           data={data ?? []}
