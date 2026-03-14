@@ -21,7 +21,7 @@ export default function Platforms() {
     {
       header: 'Platform',
       accessor: (r) => (
-        <span className="text-xs px-2 py-0.5 rounded bg-qfc-bg-light text-qfc-primary border border-qfc-border">
+        <span className="inline-flex rounded border border-qfc-border bg-qfc-bg-light px-2 py-0.5 text-xs text-qfc-primary">
           {r.platform}
         </span>
       ),
@@ -37,11 +37,14 @@ export default function Platforms() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">Platform Integrations</h2>
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Platform Integrations</h2>
+          <p className="text-sm text-qfc-muted">Connected credentials across supported platforms.</p>
+        </div>
         <span className="text-sm text-qfc-muted">{data?.total ?? 0} connected</span>
       </div>
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
         <DataTable
           columns={columns}
           data={data?.items ?? []}

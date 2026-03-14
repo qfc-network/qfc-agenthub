@@ -29,7 +29,7 @@ export default function Agents() {
       header: 'Type',
       accessor: (r) => (
         <span
-          className={`text-xs px-2 py-0.5 rounded ${
+          className={`inline-flex rounded px-2 py-0.5 text-xs ${
             r.type === 'agent'
               ? 'bg-qfc-accent/20 text-qfc-primary'
               : 'bg-purple-900/30 text-purple-300'
@@ -44,12 +44,16 @@ export default function Agents() {
     {
       header: 'Capabilities',
       accessor: (r) => (
-        <div className="flex flex-wrap gap-1">
-          {r.capabilities.map((c) => (
-            <span key={c} className="text-xs px-1.5 py-0.5 rounded bg-qfc-bg-light text-qfc-muted">
-              {c}
-            </span>
-          ))}
+        <div className="flex flex-wrap justify-end gap-1 md:justify-start">
+          {r.capabilities.length === 0 ? (
+            <span className="text-xs text-qfc-muted">—</span>
+          ) : (
+            r.capabilities.map((c) => (
+              <span key={c} className="rounded bg-qfc-bg-light px-1.5 py-0.5 text-xs text-qfc-muted">
+                {c}
+              </span>
+            ))
+          )}
         </div>
       ),
     },
@@ -61,11 +65,14 @@ export default function Agents() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">Agents &amp; Actors</h2>
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Agents &amp; Actors</h2>
+          <p className="text-sm text-qfc-muted">Browse registered agents, humans, status, and capabilities.</p>
+        </div>
         <span className="text-sm text-qfc-muted">{data?.total ?? 0} total</span>
       </div>
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
         <DataTable
           columns={columns}
           data={data?.items ?? []}

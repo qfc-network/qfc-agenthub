@@ -45,7 +45,7 @@ export default function Assignments() {
       header: 'Delegation',
       accessor: (r) =>
         r.delegation_depth > 0 ? (
-          <span className="text-xs px-1.5 py-0.5 rounded bg-qfc-bg-light text-qfc-muted">
+          <span className="inline-flex rounded bg-qfc-bg-light px-1.5 py-0.5 text-xs text-qfc-muted">
             depth {r.delegation_depth}
           </span>
         ) : (
@@ -60,11 +60,14 @@ export default function Assignments() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">Assignments</h2>
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Assignments</h2>
+          <p className="text-sm text-qfc-muted">Track work items, sources, and delegation depth.</p>
+        </div>
         <span className="text-sm text-qfc-muted">{data?.total ?? 0} total</span>
       </div>
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
         <DataTable
           columns={columns}
           data={data?.items ?? []}

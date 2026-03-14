@@ -55,20 +55,23 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6">Dashboard</h2>
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold sm:text-2xl">Dashboard</h2>
+          <p className="text-sm text-qfc-muted">Overview of actors, assignments, and recent activity.</p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Agents" value={agentCount} sub={`${humanCount} humans registered`} />
         <StatCard label="Total Assignments" value={totalAssignments} />
         <StatCard label="Active" value={activeAssignments} sub="running or pending" />
         <StatCard label="Total Actors" value={actors.data?.total ?? 0} />
       </div>
 
-      <div className="bg-qfc-bg-card border border-qfc-border rounded-lg">
-        <div className="px-4 py-3 border-b border-qfc-border">
-          <h3 className="text-sm font-semibold text-qfc-muted uppercase tracking-wider">
-            Recent Assignments
-          </h3>
+      <div className="overflow-hidden rounded-lg border border-qfc-border bg-qfc-bg-card">
+        <div className="border-b border-qfc-border px-4 py-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-qfc-muted">Recent Assignments</h3>
         </div>
         <DataTable
           columns={assignmentCols}
