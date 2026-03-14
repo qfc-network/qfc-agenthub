@@ -49,7 +49,6 @@ async function main() {
     await app.register(fastifyStatic, {
       root: webDist,
       prefix: '/',
-      decorateReply: false,
       wildcard: false,
     });
 
